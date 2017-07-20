@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<!-- saved from url=(0104)http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb -->
+<html class="gr__localhost"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+
+    <title>_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample</title>
+    <link rel="shortcut icon" type="image/x-icon" href="http://localhost:8888/static/base/images/favicon.ico?v=97c6417ed01bdc0ae3ef32ae4894fd03">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="./TextsClusteringExample_files/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="./TextsClusteringExample_files/jquery.typeahead.min.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+
+
+<script type="text/javascript" src="./TextsClusteringExample_files/MathJax.js.download" charset="utf-8"></script>
+
+<script type="text/javascript">
+// MathJax disabled, set as null to distingish from *missing* MathJax,
+// where it will be undefined, and should prompt a dialog later.
+window.mathjax_url = "/static/components/MathJax/MathJax.js";
+</script>
+
+<link rel="stylesheet" href="./TextsClusteringExample_files/bootstrap-tour.min.css" type="text/css">
+<link rel="stylesheet" href="./TextsClusteringExample_files/codemirror.css">
+
+
+    <link rel="stylesheet" href="./TextsClusteringExample_files/style.min.css" type="text/css">
+    
+
+<link rel="stylesheet" href="./TextsClusteringExample_files/override.css" type="text/css">
+<link rel="stylesheet" href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb" id="kernel-css" type="text/css">
+
+
+    <link rel="stylesheet" href="./TextsClusteringExample_files/custom.css" type="text/css">
+    <script src="./TextsClusteringExample_files/promise.min.js.download" type="text/javascript" charset="utf-8"></script>
+    <script src="./TextsClusteringExample_files/require.js.download" type="text/javascript" charset="utf-8"></script>
+    <script>
+      require.config({
+          
+          urlArgs: "v=20170720211308",
+          
+          baseUrl: '/static/',
+          paths: {
+            'auth/js/main': 'auth/js/main.min',
+            custom : '/custom',
+            nbextensions : '/nbextensions',
+            kernelspecs : '/kernelspecs',
+            underscore : 'components/underscore/underscore-min',
+            backbone : 'components/backbone/backbone-min',
+            jquery: 'components/jquery/jquery.min',
+            bootstrap: 'components/bootstrap/js/bootstrap.min',
+            bootstraptour: 'components/bootstrap-tour/build/js/bootstrap-tour.min',
+            'jquery-ui': 'components/jquery-ui/ui/minified/jquery-ui.min',
+            moment: 'components/moment/moment',
+            codemirror: 'components/codemirror',
+            termjs: 'components/xterm.js/dist/xterm',
+            typeahead: 'components/jquery-typeahead/dist/jquery.typeahead.min',
+          },
+	  map: { // for backward compatibility
+	    "*": {
+		"jqueryui": "jquery-ui",
+	    }
+	  },
+          shim: {
+            typeahead: {
+              deps: ["jquery"],
+              exports: "typeahead"
+            },
+            underscore: {
+              exports: '_'
+            },
+            backbone: {
+              deps: ["underscore", "jquery"],
+              exports: "Backbone"
+            },
+            bootstrap: {
+              deps: ["jquery"],
+              exports: "bootstrap"
+            },
+            bootstraptour: {
+              deps: ["bootstrap"],
+              exports: "Tour"
+            },
+            "jquery-ui": {
+              deps: ["jquery"],
+              exports: "$"
+            }
+          },
+          waitSeconds: 30,
+      });
+
+      require.config({
+          map: {
+              '*':{
+                'contents': 'services/contents',
+              }
+          }
+      });
+
+      define("bootstrap", function () {
+          return window.$;
+      });
+
+      define("jquery", function () {
+          return window.$;
+      });
+
+      define("jqueryui", function () {
+          return window.$;
+      });
+
+      define("jquery-ui", function () {
+          return window.$;
+      });
+      // error-catching custom.js shim.
+      define("custom", function (require, exports, module) {
+          try {
+              var custom = require('custom/custom');
+              console.debug('loaded custom.js');
+              return custom;
+          } catch (e) {
+              console.error("error loading custom.js", e);
+              return {};
+          }
+      })
+    </script>
+
+    
+    
+
+<script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="services/contents" src="./TextsClusteringExample_files/contents.js.download"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="custom/custom" src="./TextsClusteringExample_files/custom.js.download"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuRadioCheck.RTL {right: 1em; left: auto}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="nbextensions/jupyter-js-widgets/extension" src="./TextsClusteringExample_files/extension.js.download"></script><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><style type="text/css">.MathJax_Display {text-align: center; margin: 0; position: relative; display: block!important; text-indent: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; width: 100%}
+.MathJax .merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MathJax .MJX-monospace {font-family: monospace}
+.MathJax .MJX-sans-serif {font-family: sans-serif}
+#MathJax_Tooltip {background-color: InfoBackground; color: InfoText; border: 1px solid black; box-shadow: 2px 2px 5px #AAAAAA; -webkit-box-shadow: 2px 2px 5px #AAAAAA; -moz-box-shadow: 2px 2px 5px #AAAAAA; -khtml-box-shadow: 2px 2px 5px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true'); padding: 3px 4px; z-index: 401; position: absolute; left: 0; top: 0; width: auto; height: auto; display: none}
+.MathJax {display: inline; font-style: normal; font-weight: normal; line-height: normal; font-size: 100%; font-size-adjust: none; text-indent: 0; text-align: left; text-transform: none; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0; min-height: 0; border: 0; padding: 0; margin: 0}
+.MathJax:focus, body :focus .MathJax {display: inline-table}
+.MathJax img, .MathJax nobr, .MathJax a {border: 0; padding: 0; margin: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; vertical-align: 0; line-height: normal; text-decoration: none}
+img.MathJax_strut {border: 0!important; padding: 0!important; margin: 0!important; vertical-align: 0!important}
+.MathJax span {display: inline; position: static; border: 0; padding: 0; margin: 0; vertical-align: 0; line-height: normal; text-decoration: none}
+.MathJax nobr {white-space: nowrap!important}
+.MathJax img {display: inline!important; float: none!important}
+.MathJax * {transition: none; -webkit-transition: none; -moz-transition: none; -ms-transition: none; -o-transition: none}
+.MathJax_Processing {visibility: hidden; position: fixed; width: 0; height: 0; overflow: hidden}
+.MathJax_Processed {display: none!important}
+.MathJax_ExBox {display: block!important; overflow: hidden; width: 1px; height: 60ex; min-height: 0; max-height: none}
+.MathJax .MathJax_EmBox {display: block!important; overflow: hidden; width: 1px; height: 60em; min-height: 0; max-height: none}
+.MathJax .MathJax_HitBox {cursor: text; background: white; opacity: 0; filter: alpha(opacity=0)}
+.MathJax .MathJax_HitBox * {filter: none; opacity: 1; background: transparent}
+#MathJax_Tooltip * {filter: none; opacity: 1; background: transparent}
+@font-face {font-family: MathJax_Blank; src: url('about:blank')}
+.MathJax .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><style type="text/css">.widget-modal-backdrop{position:absolute;left:0;top:0;width:100%;height:100%;background:#000;z-index:999;opacity:.5;display:flex;align-items:center;justify-content:center;flex-direction:column}.widget-modal-backdrop.widget-modal-hidden{display:none}.widget-modal-backdrop.widget-modal-hide{animation:fadeout .25s}.widget-modal-backdrop.widget-modal-show{animation:fadein .25s}@keyframes fadein{from{opacity:0}to{opacity:.5}}@keyframes fadeout{from{opacity:.5}to{opacity:0}}.widget-modal-text{color:#fff;font-size:x-large;font-weight:700}.widget-modal-text div,.widget-modal-text i{display:inline}.widget-modal-text div{padding-left:1ex}.widget-modal-progress{width:300px}.jupyter-widgets{margin:2px}.jupyter-widgets.widget-container{margin:0}.widget-area{page-break-inside:avoid;-webkit-box-orient:horizontal;-webkit-box-align:stretch;-moz-box-orient:horizontal;-moz-box-align:stretch;box-orient:horizontal;box-align:stretch;display:flex;flex-direction:row;align-items:stretch}.widget-area .widget-subarea{padding:.4em 0;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;-webkit-box-flex:2;-moz-box-flex:2;box-flex:2;flex:2;-webkit-box-orient:vertical;-webkit-box-align:stretch;-moz-box-orient:vertical;-moz-box-align:stretch;box-orient:vertical;box-align:stretch;display:flex;flex-direction:column;align-items:stretch}.widget-area.connection-problems .prompt:after{content:"\F127";font-family:FontAwesome;color:#d9534f;top:3px;padding:3px}.slide-track{border:1px solid #CCC;background:#FFF;border-radius:2px}.widget-hslider{width:300px}.widget-hslider .slider-container{padding-left:8px;padding-right:2px;overflow:visible;flex-grow:1;height:5px;max-height:5px;margin-top:15px;margin-bottom:12px;border:1px solid #CCC;background:#FFF;border-radius:2px;-webkit-box-orient:horizontal;-webkit-box-align:stretch;-moz-box-orient:horizontal;-moz-box-align:stretch;box-orient:horizontal;box-align:stretch;display:flex;flex-direction:row;align-items:stretch}.widget-hslider .slider-container .ui-slider{-webkit-box-orient:horizontal;-webkit-box-align:stretch;-moz-box-orient:horizontal;-moz-box-align:stretch;box-orient:horizontal;box-align:stretch;display:flex;flex-direction:row;align-items:stretch;-webkit-box-flex:1;-moz-box-flex:1;box-flex:1;flex:1;border:0;background:0 0}.widget-hslider .slider-container .ui-slider .ui-slider-handle{width:12px;height:28px;margin-top:-8px;border-radius:2px}.widget-hslider .slider-container .ui-slider .ui-slider-range{height:12px;margin-top:-4px}.widget-vslider{width:50px;height:250px}.widget-vslider .slider-container{padding-bottom:5px;overflow:visible;flex-grow:1;width:5px;max-width:5px;margin-left:auto;margin-right:auto;border:1px solid #CCC;background:#FFF;border-radius:2px;-webkit-box-orient:vertical;-webkit-box-align:stretch;-moz-box-orient:vertical;-moz-box-align:stretch;box-orient:vertical;box-align:stretch;display:flex;flex-direction:column;align-items:stretch}.widget-vslider .slider-container .ui-slider{-webkit-box-orient:vertical;-webkit-box-align:stretch;-moz-box-orient:vertical;-moz-box-align:stretch;box-orient:vertical;box-align:stretch;display:flex;flex-direction:column;align-items:stretch;-webkit-box-flex:1;-moz-box-flex:1;box-flex:1;flex:1;border:0;background:0 0;margin-left:-4px;margin-top:5px}.widget-vslider .slider-container .ui-slider .ui-slider-handle{width:28px;height:12px;margin-left:-9px;border-radius:2px}.widget-vslider .slider-container .ui-slider .ui-slider-range{width:12px;margin-left:-1px}.widget-colorpicker{width:300px;display:flex}.widget-colorpicker.short{width:148px}.widget-colorpicker .input-group{flex-grow:1}.jupyter-button{width:148px;box-shadow:0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12)}.jupyter-button.btn,.jupyter-button.btn.hover,.jupyter-button.btn:active,.jupyter-button.btn:focus{outline:0!important}.jupyter-button.btn:active{box-shadow:0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2)}.widget-checkbox{width:148px}.widget-button,.widget-toggle-button{box-shadow:0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);width:148px;height:32px}.widget-button.btn,.widget-button.btn.hover,.widget-button.btn:active,.widget-button.btn:focus,.widget-toggle-button.btn,.widget-toggle-button.btn.hover,.widget-toggle-button.btn:active,.widget-toggle-button.btn:focus{outline:0!important}.widget-button.btn:active,.widget-toggle-button.btn:active{box-shadow:0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2)}.widget-play{width:148px;display:flex;justify-content:space-between}.widget-play button{height:32px;width:48px}.widget-toggle-button{width:148px;box-shadow:0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12)}.widget-toggle-button.btn,.widget-toggle-button.btn.hover,.widget-toggle-button.btn:active,.widget-toggle-button.btn:focus,.widget-toggle-buttons .btn,.widget-toggle-buttons .btn.hover,.widget-toggle-buttons .btn:active,.widget-toggle-buttons .btn:focus{outline:0!important}.widget-toggle-buttons .btn.active{box-shadow:none!important}.widget-toggle-buttons .btn-group{box-shadow:0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12)}.widget-text{width:300px}.widget-textarea{width:300px}.widget-listbox{width:300px}.widget-select-multiple{width:300px}.widget-select-multiple select.form-control{margin-left:0;margin-right:0}.widget-dropdown{width:300px}.widget-dropdown .widget_item{display:flex;flex-grow:1}.widget-dropdown .widget-combo-btn{flex-grow:1;min-width:10px}.widget-dropdown .dropdown-menu{max-height:200px;overflow:hidden;overflow-y:auto;width:calc(275px)}.widget-hprogress{width:300px;height:32px}.widget-hprogress .progress{flex-grow:1;margin-top:auto;margin-bottom:auto}.widget-hprogress .progress-bar{-webkit-transition:none;-moz-transition:none;-ms-transition:none;-o-transition:none;transition:none}.widget-vprogress{height:250px;width:50px}.widget-vprogress .progress{flex-grow:1;width:12px;margin-left:auto;margin-right:auto;margin-bottom:0}.widget-vprogress .progress-bar{-webkit-transition:none;-moz-transition:none;-ms-transition:none;-o-transition:none;transition:none}.widget-combo-btn{min-width:123px}.widget_item .dropdown-menu li a{color:inherit}.widget-valid{margin:8px 5px 16px}.widget-hbox{-webkit-box-orient:horizontal;-webkit-box-align:stretch;-moz-box-orient:horizontal;-moz-box-align:stretch;box-orient:horizontal;box-align:stretch;display:flex;flex-direction:row;align-items:stretch}.widget-hbox input[type=checkbox]{margin-top:10px;margin-bottom:10px}.widget-hbox input[type=color]{height:32px;width:28px;padding:1px}.widget-hbox .widget-label{min-width:10ex;max-width:10ex;padding-right:8px;padding-top:5px;text-align:right;vertical-align:text-top;word-wrap:break-word}.widget-hbox .widget-readout{padding-left:4px;padding-top:5px;height:32px;text-align:center;vertical-align:text-top;min-width:7em;max-width:7em;margin-left:3px;overflow:hidden;white-space:nowrap}.widget-hbox .widget-readout.overflow{-webkit-box-shadow:0 0 0 1px rgba(77,0,0,.15);-moz-box-shadow:0 0 0 1px rgba(77,0,0,.15);box-shadow:0 0 0 1px rgba(77,0,0,.15)}.widget-vbox{-webkit-box-orient:vertical;-webkit-box-align:stretch;-moz-box-orient:vertical;-moz-box-align:stretch;box-orient:vertical;box-align:stretch;display:flex;flex-direction:column;align-items:stretch}.widget-vbox input[type=color]{height:32px;padding:1px}.widget-vbox .widget-label{padding-bottom:5px;text-align:center;vertical-align:text-bottom}.widget-vbox .widget-readout{padding-top:5px;white-space:nowrap;text-align:center;vertical-align:text-top;margin-top:4px;overflow:hidden}.widget-vbox .widget-readout.overflow{-webkit-box-shadow:0 0 0 1px rgba(77,0,0,.15);-moz-box-shadow:0 0 0 1px rgba(77,0,0,.15);box-shadow:0 0 0 1px rgba(77,0,0,.15)}.widget-box{box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;-webkit-box-align:start;-moz-box-align:start;box-align:start;align-items:flex-start}.widget-radio-box{-webkit-box-orient:vertical;-webkit-box-align:stretch;-moz-box-orient:vertical;-moz-box-align:stretch;box-orient:vertical;box-align:stretch;display:flex;flex-direction:column;align-items:stretch;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;padding-top:4px}.widget-radio-box label{margin-top:2px;margin-bottom:2px;margin-left:22px}/*# sourceMappingURL=widgets.min.css.map */</style></head>
+
+<body class="notebook_app command_mode" data-jupyter-api-token="fe597c3c1a889dfbbb46ae54651923f1cad7fb05fa31b033" data-base-url="/" data-ws-url="" data-notebook-name="_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb" data-notebook-path="Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb" data-gr-c-s-loaded="true"><div style="visibility: hidden; overflow: hidden; position: absolute; top: 0px; height: 1px; width: auto; padding: 0px; border: 0px; margin: 0px; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal;"><div id="MathJax_Hidden"></div></div><div id="MathJax_Message" style="display: none;"></div>
+
+<noscript>
+    &lt;div id='noscript'&gt;
+      Jupyter Notebook requires JavaScript.&lt;br&gt;
+      Please enable it to proceed.
+  &lt;/div&gt;
+</noscript>
+
+<div id="header" style="display: block;">
+  <div id="header-container" class="container">
+  <div id="ipython_notebook" class="nav navbar-brand pull-left"><a href="http://localhost:8888/tree" title="dashboard"><img src="./TextsClusteringExample_files/logo.png" alt="Jupyter Notebook"></a></div>
+
+  
+  
+  
+
+    <span id="login_widget">
+      
+        <button id="logout" class="btn btn-sm navbar-btn">Logout</button>
+      
+    </span>
+
+  
+
+  
+
+  
+
+
+<span id="save_widget" class="pull-left save_widget">
+    <span id="notebook_name" class="filename">_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample</span>
+    <span class="checkpoint_status" title="no checkpoint"></span>
+    <span class="autosave_status">(autosaved)</span>
+</span>
+
+<span id="kernel_logo_widget">
+  
+  <img class="current_kernel_logo" src="./TextsClusteringExample_files/logo-64x64.png" style="display: inline;">
+  
+</span>
+
+
+  </div>
+  <div class="header-bar"></div>
+
+  
+<div id="menubar-container" class="container">
+<div id="menubar">
+    <div id="menus" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <button type="button" class="btn btn-default navbar-btn navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <i class="fa fa-bars"></i>
+              <span class="navbar-text">Menu</span>
+            </button>
+            <p id="kernel_indicator" class="navbar-text indicator_area">
+              <span class="kernel_indicator_name">Python 3</span>
+              <i id="kernel_indicator_icon" class="kernel_idle_icon" title="Kernel Idle"></i>
+            </p>
+            <i id="readonly-indicator" class="navbar-text" title="This notebook is read-only" style="display: none;">
+                <span class="fa-stack">
+                    <i class="fa fa-save fa-stack-1x"></i>
+                    <i class="fa fa-ban fa-stack-2x text-danger"></i>
+                </span>
+            </i>
+            <i id="modal_indicator" class="navbar-text modal_indicator" title="Command Mode"></i>
+            <span id="notification_area"><div id="notification_kernel" class="notification_widget btn btn-xs navbar-btn undefined info" style="display: none;"><span></span></div><div id="notification_notebook" class="notification_widget btn btn-xs navbar-btn" style="display: none;"><span></span></div><div id="notification_kernelspec" class="notification_widget btn btn-xs navbar-btn undefined info" style="display: none;"><span title="Only candidate for language: python was Python 3"></span></div><div id="notification_widgets" class="notification_widget btn btn-xs navbar-btn" style="display: none;"><span></span></div></span>
+            <div class="navbar-collapse collapse">
+              <ul class="nav navbar-nav">
+                <li class="dropdown"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#" class="dropdown-toggle" data-toggle="dropdown">File</a>
+                    <ul id="file_menu" class="dropdown-menu">
+                        <li id="new_notebook" class="dropdown-submenu">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">New Notebook</a>
+                            <ul class="dropdown-menu" id="menu-new-notebook-submenu"><li id="new-notebook-submenu-python3"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Python 3</a></li></ul>
+                        </li>
+                        <li id="open_notebook" title="Opens a new window with the Dashboard view">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Open...</a></li>
+                        <!-- <hr/> -->
+                        <li class="divider"></li>
+                        <li id="copy_notebook" title="Open a copy of this notebook&#39;s contents and start a new kernel">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Make a Copy...</a></li>
+                        <li id="rename_notebook"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Rename...</a></li>
+                        <li id="save_checkpoint"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Save and Checkpoint</a></li>
+                        <!-- <hr/> -->
+                        <li class="divider"></li>
+                        <li id="restore_checkpoint" class="dropdown-submenu"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Revert to Checkpoint</a>
+                          <ul class="dropdown-menu"><li class="disabled"><a>No checkpoints</a></li></ul>
+                        </li>
+                        <li class="divider"></li>
+                        <li id="print_preview"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Print Preview</a></li>
+                        <li class="dropdown-submenu"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Download as</a>
+                            <ul class="dropdown-menu">
+                                <li id="download_ipynb"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Notebook (.ipynb)</a></li>
+                                <li id="download_script"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Python (.py)</a></li>
+                                <li id="download_html"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">HTML (.html)</a></li>
+                                <li id="download_markdown"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Markdown (.md)</a></li>
+                                <li id="download_rst"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">reST (.rst)</a></li>
+                                <li id="download_pdf"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">PDF via LaTeX (.pdf)</a></li>
+                            </ul>
+                        </li>
+                        <li class="divider"></li>
+                        <li id="trust_notebook" title="Trust the output of this notebook">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Trust Notebook</a></li>
+                        <li class="divider"></li>
+                        <li id="kill_and_exit" title="Shutdown this notebook&#39;s kernel, and close this window">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Close and Halt</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#" class="dropdown-toggle" data-toggle="dropdown">Edit</a>
+                    <ul id="edit_menu" class="dropdown-menu">
+                        <li id="cut_cell"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Cut Cells</a></li>
+                        <li id="copy_cell"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Copy Cells</a></li>
+                        <li id="paste_cell_above" class="disabled"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Paste Cells Above</a></li>
+                        <li id="paste_cell_below" class="disabled"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Paste Cells Below</a></li>
+                        <li id="paste_cell_replace" class="disabled"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Paste Cells &amp; Replace</a></li>
+                        <li id="delete_cell"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Delete Cells</a></li>
+                        <li id="undelete_cell" class="disabled"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Undo Delete Cells</a></li>
+                        <li class="divider"></li>
+                        <li id="split_cell"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Split Cell</a></li>
+                        <li id="merge_cell_above"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Merge Cell Above</a></li>
+                        <li id="merge_cell_below"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Merge Cell Below</a></li>
+                        <li class="divider"></li>
+                        <li id="move_cell_up"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Move Cell Up</a></li>
+                        <li id="move_cell_down"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Move Cell Down</a></li>
+                        <li class="divider"></li>
+                        <li id="edit_nb_metadata"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Edit Notebook Metadata</a></li>
+                        <li class="divider"></li>
+                        <li id="find_and_replace"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#"> Find and Replace </a></li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#" class="dropdown-toggle" data-toggle="dropdown">View</a>
+                    <ul id="view_menu" class="dropdown-menu">
+                        <li id="toggle_header" title="Show/Hide the logo and notebook title (above menu bar)">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Toggle Header</a></li>
+                        <li id="toggle_toolbar" title="Show/Hide the action icons (below menu bar)">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Toggle Toolbar</a></li>
+                        <li id="menu-cell-toolbar" class="dropdown-submenu">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Cell Toolbar</a>
+                            <ul class="dropdown-menu" id="menu-cell-toolbar-submenu"><li data-name="None"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">None</a></li><li data-name="Edit%20Metadata"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Edit Metadata</a></li><li data-name="Raw%20Cell%20Format"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Raw Cell Format</a></li><li data-name="Slideshow"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Slideshow</a></li></ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#" class="dropdown-toggle" data-toggle="dropdown">Insert</a>
+                    <ul id="insert_menu" class="dropdown-menu">
+                        <li id="insert_cell_above" title="Insert an empty Code cell above the currently active cell">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Insert Cell Above</a></li>
+                        <li id="insert_cell_below" title="Insert an empty Code cell below the currently active cell">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Insert Cell Below</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#" class="dropdown-toggle" data-toggle="dropdown">Cell</a>
+                    <ul id="cell_menu" class="dropdown-menu">
+                        <li id="run_cell" title="Run this cell, and move cursor to the next one">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Run Cells</a></li>
+                        <li id="run_cell_select_below" title="Run this cell, select below">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Run Cells and Select Below</a></li>
+                        <li id="run_cell_insert_below" title="Run this cell, insert below">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Run Cells and Insert Below</a></li>
+                        <li id="run_all_cells" title="Run all cells in the notebook">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Run All</a></li>
+                        <li id="run_all_cells_above" title="Run all cells above (but not including) this cell">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Run All Above</a></li>
+                        <li id="run_all_cells_below" title="Run this cell and all cells below it">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Run All Below</a></li>
+                        <li class="divider"></li>
+                        <li id="change_cell_type" class="dropdown-submenu" title="All cells in the notebook have a cell type. By default, new cells are created as &#39;Code&#39; cells">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Cell Type</a>
+                            <ul class="dropdown-menu">
+                              <li id="to_code" title="Contents will be sent to the kernel for execution, and output will display in the footer of cell">
+                                  <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Code</a></li>
+                              <li id="to_markdown" title="Contents will be rendered as HTML and serve as explanatory text">
+                                  <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Markdown</a></li>
+                              <li id="to_raw" title="Contents will pass through nbconvert unmodified">
+                                  <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Raw NBConvert</a></li>
+                            </ul>
+                        </li>
+                        <li class="divider"></li>
+                        <li id="current_outputs" class="dropdown-submenu"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Current Outputs</a>
+                            <ul class="dropdown-menu">
+                                <li id="toggle_current_output" title="Hide/Show the output of the current cell">
+                                    <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Toggle</a>
+                                </li>
+                                <li id="toggle_current_output_scroll" title="Scroll the output of the current cell">
+                                    <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Toggle Scrolling</a>
+                                </li>
+                                <li id="clear_current_output" title="Clear the output of the current cell">
+                                    <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Clear</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li id="all_outputs" class="dropdown-submenu"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">All Output</a>
+                            <ul class="dropdown-menu">
+                                <li id="toggle_all_output" title="Hide/Show the output of all cells">
+                                    <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Toggle</a>
+                                </li>
+                                <li id="toggle_all_output_scroll" title="Scroll the output of all cells">
+                                    <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Toggle Scrolling</a>
+                                </li>
+                                <li id="clear_all_output" title="Clear the output of all cells">
+                                    <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Clear</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#" class="dropdown-toggle" data-toggle="dropdown">Kernel</a>
+                    <ul id="kernel_menu" class="dropdown-menu">
+                        <li id="int_kernel" title="Send KeyboardInterrupt (CTRL-C) to the Kernel">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Interrupt</a>
+                        </li>
+                        <li id="restart_kernel" title="Restart the Kernel">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Restart</a>
+                        </li>
+                        <li id="restart_clear_output" title="Restart the Kernel and clear all output">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Restart &amp; Clear Output</a>
+                        </li>
+                        <li id="restart_run_all" title="Restart the Kernel and re-run the notebook">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Restart &amp; Run All</a>
+                        </li>
+                        <li id="reconnect_kernel" title="Reconnect to the Kernel">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Reconnect</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li id="menu-change-kernel" class="dropdown-submenu">
+                            <a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Change kernel</a>
+                            <ul class="dropdown-menu" id="menu-change-kernel-submenu"><li id="kernel-submenu-python3"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Python 3</a></li></ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#" data-toggle="dropdown" class="dropdown-toggle">Widgets</a><ul id="widget-submenu" class="dropdown-menu"><li title="Rasterizes the current state of the widgets to the notebook as PNG images."><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Save notebook with snapshots</a></li><li title="Download the widget state as a JSON file"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Download widget state</a></li><li title="Embed interactive widgets"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Embed widgets</a></li></ul></li><li class="dropdown"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#" class="dropdown-toggle" data-toggle="dropdown">Help</a>
+                    <ul id="help_menu" class="dropdown-menu">
+                        
+                        <li id="notebook_tour" title="A quick tour of the notebook user interface"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">User Interface Tour</a></li>
+                        <li id="keyboard_shortcuts" title="Opens a tooltip with all keyboard shortcuts"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">Keyboard Shortcuts</a></li>
+                        <li class="divider"></li>
+                        
+
+                        
+                            
+                                <li><a rel="noreferrer" href="http://nbviewer.ipython.org/github/ipython/ipython/blob/3.x/examples/Notebook/Index.ipynb" target="_blank" title="Opens in a new window">
+                                
+                                    <i class="fa fa-external-link menu-icon pull-right"></i>
+                                
+
+                                Notebook Help
+                                </a></li>
+                            
+                                <li><a rel="noreferrer" href="https://help.github.com/articles/markdown-basics/" target="_blank" title="Opens in a new window">
+                                
+                                    <i class="fa fa-external-link menu-icon pull-right"></i>
+                                
+
+                                Markdown
+                                </a></li>
+                            
+                            
+                        
+                        <li id="kernel-help-links" class="divider"></li><li><a target="_blank" title="Opens in a new window" href="http://docs.python.org/3.6?v=20170720211308"><i class="fa fa-external-link menu-icon pull-right"></i><span>Python</span></a></li><li><a target="_blank" title="Opens in a new window" href="http://ipython.org/documentation.html?v=20170720211308"><i class="fa fa-external-link menu-icon pull-right"></i><span>IPython</span></a></li><li><a target="_blank" title="Opens in a new window" href="http://docs.scipy.org/doc/numpy/reference/?v=20170720211308"><i class="fa fa-external-link menu-icon pull-right"></i><span>NumPy</span></a></li><li><a target="_blank" title="Opens in a new window" href="http://docs.scipy.org/doc/scipy/reference/?v=20170720211308"><i class="fa fa-external-link menu-icon pull-right"></i><span>SciPy</span></a></li><li><a target="_blank" title="Opens in a new window" href="http://matplotlib.org/contents.html?v=20170720211308"><i class="fa fa-external-link menu-icon pull-right"></i><span>Matplotlib</span></a></li><li><a target="_blank" title="Opens in a new window" href="http://docs.sympy.org/latest/index.html?v=20170720211308"><i class="fa fa-external-link menu-icon pull-right"></i><span>SymPy</span></a></li><li><a target="_blank" title="Opens in a new window" href="http://pandas.pydata.org/pandas-docs/stable/?v=20170720211308"><i class="fa fa-external-link menu-icon pull-right"></i><span>pandas</span></a></li><li class="divider"></li>
+                        <li title="About Jupyter Notebook"><a id="notebook_about" href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#">About</a></li>
+                        
+                    </ul>
+                </li>
+              </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="maintoolbar" class="navbar">
+  <div class="toolbar-inner navbar-inner navbar-nobg">
+    <div id="maintoolbar-container" class="container toolbar"><div class="btn-group" id="save-notbook"><button class="btn btn-default" title="Save and Checkpoint" data-jupyter-action="jupyter-notebook:save-notebook"><i class="fa-save fa"></i></button></div><div class="btn-group" id="insert_above_below"><button class="btn btn-default" title="insert cell below" data-jupyter-action="jupyter-notebook:insert-cell-below"><i class="fa-plus fa"></i></button></div><div class="btn-group" id="cut_copy_paste"><button class="btn btn-default" title="cut selected cells" data-jupyter-action="jupyter-notebook:cut-cell"><i class="fa-cut fa"></i></button><button class="btn btn-default" title="copy selected cells" data-jupyter-action="jupyter-notebook:copy-cell"><i class="fa-copy fa"></i></button><button class="btn btn-default" title="paste cells below" data-jupyter-action="jupyter-notebook:paste-cell-below"><i class="fa-paste fa"></i></button></div><div class="btn-group" id="move_up_down"><button class="btn btn-default" title="move selected cells up" data-jupyter-action="jupyter-notebook:move-cell-up"><i class="fa-arrow-up fa"></i></button><button class="btn btn-default" title="move selected cells down" data-jupyter-action="jupyter-notebook:move-cell-down"><i class="fa-arrow-down fa"></i></button></div><div class="btn-group" id="run_int"><button class="btn btn-default" title="run cell, select below" data-jupyter-action="jupyter-notebook:run-cell-and-select-next"><i class="fa-step-forward fa"></i></button><button class="btn btn-default" title="interrupt kernel" data-jupyter-action="jupyter-notebook:interrupt-kernel"><i class="fa-stop fa"></i></button><button class="btn btn-default" title="restart the kernel (with dialog)" data-jupyter-action="jupyter-notebook:confirm-restart-kernel"><i class="fa-repeat fa"></i></button></div><select id="cell_type" class="form-control select-xs"><option value="code">Code</option><option value="markdown">Markdown</option><option value="raw">Raw NBConvert</option><option value="heading">Heading</option><option value="multiselect" disabled="disabled" style="display: none;">-</option></select><div class="btn-group"><button class="btn btn-default" title="open the command palette" data-jupyter-action="jupyter-notebook:show-command-palette"><i class="fa-keyboard-o fa"></i></button></div><div class="btn-group"><button title="show new celltoolbar selector location" class="btn btn-default">CellToolbar</button></div></div>
+  </div>
+</div>
+</div>
+
+<div class="lower-header-bar"></div>
+
+</div>
+
+<div id="site" style="height: 475px; display: block;">
+
+
+<div id="ipython-main-app">
+    <div id="notebook_panel">
+        <div id="notebook" tabindex="-1"><div class="container" id="notebook-container"><div class="cell text_cell rendered unselected" tabindex="2"><div class="prompt input_prompt"></div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-default CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true" style="bottom: 0px;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; padding-right: 0px; padding-bottom: 0px; margin-bottom: -21px; border-right-width: 9px; min-height: 32px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 21px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-header cm-header-1"># Пример: кластеризация текстов</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 32px;"></div><div class="CodeMirror-gutters" style="display: none; height: 41px;"></div></div></div></div><div class="text_cell_render rendered_html" tabindex="-1"><h1 id="Пример:-кластеризация-текстов">Пример: кластеризация текстов<a class="anchor-link" href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#Пример:-кластеризация-текстов">¶</a></h1>
+</div></div></div><div class="cell text_cell rendered unselected" tabindex="2"><div class="prompt input_prompt"></div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-default CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true" style="bottom: 0px;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; padding-right: 0px; padding-bottom: 0px; margin-bottom: -21px; border-right-width: 9px; min-height: 31px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 20px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-header cm-header-2">## Выборка</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 31px;"></div><div class="CodeMirror-gutters" style="display: none; height: 40px;"></div></div></div></div><div class="text_cell_render rendered_html" tabindex="-1"><h2 id="Выборка">Выборка<a class="anchor-link" href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#Выборка">¶</a></h2>
+</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[151]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 364.703px; margin-bottom: -21px; border-right-width: 9px; min-height: 79px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"><span><span>​</span>x</span></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">from</span> <span class="cm-variable">sklearn</span>.<span class="cm-property">datasets</span> <span class="cm-keyword">import</span> <span class="cm-variable">fetch_20newsgroups</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">train_all</span> = <span class="cm-variable">fetch_20newsgroups</span>(<span class="cm-variable">subset</span>=<span class="cm-string">'train'</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">train_all</span>.<span class="cm-property">target_names</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 79px;"></div><div class="CodeMirror-gutters" style="display: none; height: 88px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>['alt.atheism', 'comp.graphics', 'comp.os.ms-windows.misc', 'comp.sys.ibm.pc.hardware', 'comp.sys.mac.hardware', 'comp.windows.x', 'misc.forsale', 'rec.autos', 'rec.motorcycles', 'rec.sport.baseball', 'rec.sport.hockey', 'sci.crypt', 'sci.electronics', 'sci.med', 'sci.space', 'soc.religion.christian', 'talk.politics.guns', 'talk.politics.mideast', 'talk.politics.misc', 'talk.religion.misc']
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[152]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 672.625px; margin-bottom: -21px; border-right-width: 9px; min-height: 62px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">simple_dataset</span> = <span class="cm-variable">fetch_20newsgroups</span>(</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;">    <span class="cm-variable">subset</span>=<span class="cm-string">'train'</span>, </span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;">    <span class="cm-variable">categories</span>=[<span class="cm-string">'comp.sys.mac.hardware'</span>, <span class="cm-string">'soc.religion.christian'</span>, <span class="cm-string">'rec.sport.hockey'</span>])</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 62px;"></div><div class="CodeMirror-gutters" style="display: none; height: 71px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style="display: none;"></div><div class="output" style="display: none;"></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[153]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 218.453px; margin-bottom: -21px; border-right-width: 9px; min-height: 28px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">simple_dataset</span>.<span class="cm-property">data</span>[<span class="cm-number">0</span>]</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 28px;"></div><div class="CodeMirror-gutters" style="display: none; height: 37px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>From: erik@cheshire.oxy.edu (Erik Adams)
+Subject: HELP!!  My Macintosh "luggable" has lines on its screen!
+Organization: Occidental College, Los Angeles, CA 90041 USA.
+Distribution: comp
+Lines: 20
+
+Okay, I don't use it very much, but I would like for it to keep working
+correctly, at least as long as Apple continues to make System software
+that will run on it, if slowly :-)
+
+Here is the problem:  When the screen is tilted too far back, vertical
+lines appear on the screen.  They are every 10 pixels or so, and seem
+to be affected somewhat by opening windows and pulling down menus.
+It looks to a semi-technical person like there is a loose connection
+between the screen and the rest of the computer.
+
+I am open to suggestions that do not involve buying a new computer,
+or taking this one to the shop.  I would also like to not have
+to buy one of Larry Pina's books.  I like Larry, but I'm not sure
+I feel strongly enough about the computer to buy a service manual
+for it.
+
+On a related note:  what does the monitor connector connect to?
+
+Erik
+
+
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[154]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 164.609px; margin-bottom: -21px; border-right-width: 9px; min-height: 28px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">simple_dataset</span>.<span class="cm-property">target</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 28px;"></div><div class="CodeMirror-gutters" style="display: none; height: 37px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt output_prompt">Out[154]:</div><div class="output_subarea output_text output_result"><pre>array([0, 0, 1, ..., 0, 1, 2])</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[155]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 226.141px; margin-bottom: -21px; border-right-width: 9px; min-height: 28px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">simple_dataset</span>.<span class="cm-property">data</span>[<span class="cm-operator">-</span><span class="cm-number">1</span>]</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 28px;"></div><div class="CodeMirror-gutters" style="display: none; height: 37px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>From: dlecoint@garnet.acns.fsu.edu (Darius_Lecointe)
+Subject: Re: Sabbath Admissions 5of5
+Organization: Florida State University
+Lines: 21
+
+I find it interesting that cls never answered any of the questions posed. 
+Then he goes on the make statements which make me shudder.  He has
+established a two-tiered God.  One set of rules for the Jews (his people)
+and another set for the saved Gentiles (his people).  Why would God
+discriminate?  Does the Jew who accepts Jesus now have to live under the
+Gentile rules.
+
+God has one set of rules for all his people.  Paul was never against the
+law.  In fact he says repeatedly that faith establishes rather that annuls
+the law.  Paul's point is germane to both Jews and Greeks.  The Law can
+never be used as an instrument of salvation.  And please do not combine
+the ceremonial and moral laws in one.
+
+In Matt 5:14-19 Christ plainly says what He came to do and you say He was
+only saying that for the Jews's benefit.  Your Christ must be a
+politician, speaking from both sides of His mouth.  As Paul said, "I have
+not so learned Christ."  Forget all the theology, just do what Jesus says.
+ Your excuses will not hold up in a court of law on earth, far less in
+God's judgement hall.
+
+Darius
+
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[156]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 226.141px; margin-bottom: -21px; border-right-width: 9px; min-height: 28px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">simple_dataset</span>.<span class="cm-property">data</span>[<span class="cm-operator">-</span><span class="cm-number">2</span>]</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 28px;"></div><div class="CodeMirror-gutters" style="display: none; height: 37px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>From: scialdone@nssdca.gsfc.nasa.gov (John Scialdone)
+Subject: CUT Vukota and Pilon!!!
+News-Software: VAX/VMS VNEWS 1.41    
+Organization: NASA - Goddard Space Flight Center
+Lines: 32
+
+I have been to all 3 Isles/Caps tilts at the Crap Centre this year, all Isles
+wins and there is no justification for Vukota and Pilon to play for the Isles.
+Vukota is absolutely the worst puck handler in the world!! He couldn't hit a
+bull in the ass with a banjo!! Al must remember a few years back when Mick 
+scored 3 goals in one period against the Caps in a 5-3 Isles win. I was there
+and was astonished as was the rest of the crowd. Wake-up Al!!! Years later he's
+gotten worse. He's a cheap shot artist and always ends up getting
+stupid/senseless penalties. I think he would make a good police officier!!!
+
+As for Pilon, he can't carry the puck out to center ice by himself. He either
+makes a bad pass resulting in a turnover, or he attempts to bring the puck 
+towards the neutral zone and skates right into an opposing skater. He can't
+stay on his skates with most forwards or centers. He either falls down or 
+committs a penalty. Call up somebody from Capital District AL!!!!!
+
+As far as the playoffs, the Isles are as difficult to figure out as the Caps.
+Two good teams with talent but so inconsistent. They should meet in the first
+round. The Isles seem to play up to the level of their competition so they
+should play well against Jersey tonite. It'll probably be another tight 1-goal
+game as the last 20 games hve been for the Isles. I wish when the get a lead
+they could continue to pour it on instead of settling back into a defensive
+shell and letting the opposition get back in the game. Al MUST understand he
+can't do with this team what he did with the 80-83 Isles. maybe Al should got
+to. Where is Bobby Nystrom?? Clark Gilles?? John Tonelli?? These are the kind
+of young minds we need behing the bench!!    FIRE AL!!!!
+
+John Scialdone
+SCIALDONE@NSSDCA.GSFC.NASA.GOV
+
+**********When your ship comes in, first man takes the Sail********************
+
+
+
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[157]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 233.844px; margin-bottom: -21px; border-right-width: 9px; min-height: 28px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-builtin">len</span>(<span class="cm-variable">simple_dataset</span>.<span class="cm-property">data</span>)</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 28px;"></div><div class="CodeMirror-gutters" style="display: none; height: 37px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>1777
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell text_cell unselected rendered" tabindex="2"><div class="prompt input_prompt"></div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-default CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true" style="bottom: 0px;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; padding-right: 0px; padding-bottom: 0px; margin-bottom: -21px; border-right-width: 9px; min-height: 31px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 20px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-header cm-header-2">## Признаки</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 31px;"></div><div class="CodeMirror-gutters" style="display: none; height: 40px;"></div></div></div></div><div class="text_cell_render rendered_html" tabindex="-1"><h2 id="Признаки">Признаки<a class="anchor-link" href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#Признаки">¶</a></h2>
+</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[158]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 587.891px; margin-bottom: -21px; border-right-width: 9px; min-height: 79px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">from</span> <span class="cm-variable">sklearn</span>.<span class="cm-property">feature_extraction</span>.<span class="cm-property">text</span> <span class="cm-keyword">import</span> <span class="cm-variable">CountVectorizer</span>, <span class="cm-variable">TfidfVectorizer</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">vectorizer</span> = <span class="cm-variable">TfidfVectorizer</span>(<span class="cm-variable">max_df</span>=<span class="cm-number">500</span>, <span class="cm-variable">min_df</span>=<span class="cm-number">10</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">matrix</span> = <span class="cm-variable">vectorizer</span>.<span class="cm-property">fit_transform</span>(<span class="cm-variable">simple_dataset</span>.<span class="cm-property">data</span>)</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 79px;"></div><div class="CodeMirror-gutters" style="display: none; height: 88px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style="display: none;"></div><div class="output" style="display: none;"></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[159]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 141.516px; margin-bottom: -21px; border-right-width: 9px; min-height: 28px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">matrix</span>.<span class="cm-property">shape</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 28px;"></div><div class="CodeMirror-gutters" style="display: none; height: 37px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>(1777, 3767)
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell text_cell unselected rendered" tabindex="2"><div class="prompt input_prompt"></div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-default CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true" style="bottom: 0px;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; padding-right: 0px; padding-bottom: 0px; margin-bottom: -21px; border-right-width: 9px; min-height: 31px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 20px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-header cm-header-2">## Аггломеративная кластеризация (neighbour joining)</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 31px;"></div><div class="CodeMirror-gutters" style="display: none; height: 40px;"></div></div></div></div><div class="text_cell_render rendered_html" tabindex="-1"><h2 id="Аггломеративная-кластеризация-(neighbour-joining)">Аггломеративная кластеризация (neighbour joining)<a class="anchor-link" href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#Аггломеративная-кластеризация-(neighbour-joining)">¶</a></h2>
+</div></div></div><div class="cell code_cell rendered unselected" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[165]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 649.469px; margin-bottom: -21px; border-right-width: 9px; min-height: 79px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>x</pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"><div class="CodeMirror-selected" style="position: absolute; left: 0px; top: 0px; width: 492.531px; height: 17px;"></div></div><div class="CodeMirror-cursors" style="visibility: hidden;"></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">from</span> <span class="cm-variable">sklearn</span>.<span class="cm-property">cluster</span>.<span class="cm-property">hierarchical</span> <span class="cm-keyword">import</span> <span class="cm-variable">AgglomerativeClustering</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">model</span> = <span class="cm-variable">AgglomerativeClustering</span>(<span class="cm-variable">n_clusters</span>=<span class="cm-number">3</span>, <span class="cm-variable">affinity</span>=<span class="cm-string">'cosine'</span>, <span class="cm-variable">linkage</span>=<span class="cm-string">'complete'</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">preds</span> = <span class="cm-variable">model</span>.<span class="cm-property">fit_predict</span>(<span class="cm-variable">matrix</span>.<span class="cm-property">toarray</span>())</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 79px;"></div><div class="CodeMirror-gutters" style="display: none; height: 88px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[166]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 133.813px; margin-bottom: -21px; border-right-width: 9px; min-height: 28px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-builtin">list</span>(<span class="cm-variable">preds</span>)</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 28px;"></div><div class="CodeMirror-gutters" style="display: none; height: 37px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to scroll output; double click to hide" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1]
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[167]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 118.406px; margin-bottom: -21px; border-right-width: 9px; min-height: 28px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">matrix</span>[<span class="cm-number">0</span>]</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 28px;"></div><div class="CodeMirror-gutters" style="display: none; height: 37px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to unscroll output; double click to hide" style=""></div><div class="output output_scroll" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>  (0, 877)	0.111806579628
+  (0, 880)	0.11851815596
+  (0, 2243)	0.0925317447412
+  (0, 1136)	0.0500506718781
+  (0, 2358)	0.0840797530073
+  (0, 2820)	0.108042909343
+  (0, 2108)	0.1235763517
+  (0, 3035)	0.101544778998
+  (0, 1229)	0.0736045063897
+  (0, 3262)	0.130212979504
+  (0, 1366)	0.0836339497399
+  (0, 3305)	0.0678317940862
+  (0, 551)	0.0978140030819
+  (0, 1961)	0.228859994985
+  (0, 619)	0.170473343334
+  (0, 294)	0.0517710627222
+  (0, 3322)	0.0953890204835
+  (0, 2325)	0.054192064708
+  (0, 620)	0.111806579628
+  (0, 1831)	0.125052646182
+  (0, 3285)	0.112645815931
+  (0, 2422)	0.0942723610696
+  (0, 301)	0.0556325669605
+  (0, 855)	0.201625540883
+  (0, 2868)	0.0859620897079
+  :	:
+  (0, 900)	0.1235763517
+  (0, 354)	0.0694743738355
+  (0, 2048)	0.0748844895603
+  (0, 1991)	0.0711302768586
+  (0, 926)	0.117420593185
+  (0, 3722)	0.0950102887763
+  (0, 1905)	0.0817353647899
+  (0, 2273)	0.0579600218377
+  (0, 3600)	0.0573701527992
+  (0, 3555)	0.0622908798771
+  (0, 2413)	0.102588780336
+  (0, 69)	0.0685826705273
+  (0, 838)	0.101544778998
+  (0, 1121)	0.0644281622922
+  (0, 3553)	0.0734668995949
+  (0, 625)	0.0520717390913
+  (0, 319)	0.100549353806
+  (0, 2056)	0.0961672074361
+  (0, 810)	0.0809427637022
+  (0, 2991)	0.389561083053
+  (0, 1846)	0.0674142631248
+  (0, 2082)	0.0965671776392
+  (0, 1659)	0.0722667093676
+  (0, 239)	0.0950102887763
+  (0, 1246)	0.390638938513
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[168]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 233.891px; margin-bottom: -21px; border-right-width: 9px; min-height: 28px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">vectorizer</span>.<span class="cm-property">get_feature_names</span>()</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 28px;"></div><div class="CodeMirror-gutters" style="display: none; height: 37px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to unscroll output; double click to hide" style=""></div><div class="output output_scroll" style=""><div class="output_area"><div class="prompt output_prompt">Out[168]:</div><div class="output_subarea output_text output_result"><pre>[u'00',
+ u'000',
+ u'01',
+ u'02',
+ u'03',
+ u'030',
+ u'0358',
+ u'04',
+ u'040',
+ u'05',
+ u'06',
+ u'07',
+ u'08',
+ u'09',
+ u'10',
+ u'100',
+ u'1000',
+ u'101',
+ u'102',
+ u'104',
+ u'105',
+ u'106',
+ u'109',
+ u'11',
+ u'110',
+ u'112',
+ u'113',
+ u'119',
+ u'12',
+ u'120',
+ u'126',
+ u'127',
+ u'128',
+ u'129',
+ u'13',
+ u'132',
+ u'133',
+ u'14',
+ u'140',
+ u'15',
+ u'150',
+ u'152',
+ u'16',
+ u'160',
+ u'17',
+ u'170',
+ u'175',
+ u'18',
+ u'180',
+ u'19',
+ u'1987',
+ u'1988',
+ u'1989',
+ u'199',
+ u'1990',
+ u'1991',
+ u'1992',
+ u'1993',
+ u'1993apr14',
+ u'1993apr15',
+ u'1993apr16',
+ u'1993apr18',
+ u'1993apr19',
+ u'1993apr20',
+ u'1993apr5',
+ u'1993apr6',
+ u'1d17',
+ u'1d20',
+ u'1st',
+ u'20',
+ u'200',
+ u'2000',
+ u'203',
+ u'21',
+ u'210',
+ u'22',
+ u'23',
+ u'230',
+ u'24',
+ u'240',
+ u'241',
+ u'25',
+ u'253',
+ u'256',
+ u'25mhz',
+ u'26',
+ u'27',
+ u'28',
+ u'286',
+ u'29',
+ u'2nd',
+ u'30',
+ u'300',
+ u'30602',
+ u'31',
+ u'32',
+ u'33',
+ u'34',
+ u'35',
+ u'36',
+ u'37',
+ u'38',
+ u'386',
+ u'39',
+ u'3rd',
+ u'40',
+ u'400',
+ u'403',
+ u'408',
+ u'41',
+ u'42',
+ u'43',
+ u'44',
+ u'45',
+ u'46',
+ u'47',
+ u'48',
+ u'486',
+ u'49',
+ u'4mb',
+ u'4th',
+ u'50',
+ u'500',
+ u'51',
+ u'512',
+ u'512k',
+ u'52',
+ u'53',
+ u'54',
+ u'542',
+ u'55',
+ u'56',
+ u'57',
+ u'58',
+ u'59',
+ u'5of5',
+ u'5th',
+ u'60',
+ u'600',
+ u'61',
+ u'610',
+ u'62',
+ u'63',
+ u'64',
+ u'65',
+ u'650',
+ u'66',
+ u'67',
+ u'68',
+ u'68030',
+ u'68040',
+ u'680x0',
+ u'69',
+ u'6th',
+ u'70',
+ u'700',
+ u'706',
+ u'71',
+ u'72',
+ u'73',
+ u'74',
+ u'7415',
+ u'75',
+ u'76',
+ u'77',
+ u'78',
+ u'79',
+ u'7th',
+ u'80',
+ u'800',
+ u'80ns',
+ u'81',
+ u'82',
+ u'83',
+ u'84',
+ u'85',
+ u'86',
+ u'87',
+ u'88',
+ u'89',
+ u'90',
+ u'900',
+ u'91',
+ u'92',
+ u'93',
+ u'94',
+ u'95',
+ u'950',
+ u'96',
+ u'97',
+ u'9760',
+ u'98',
+ u'99',
+ u'__',
+ u'___',
+ u'____',
+ u'aa888',
+ u'aaron',
+ u'ab',
+ u'abc',
+ u'ability',
+ u'able',
+ u'abo',
+ u'above',
+ u'abraham',
+ u'absence',
+ u'absolute',
+ u'absolutely',
+ u'absolutes',
+ u'ac',
+ u'academic',
+ u'acc',
+ u'accelerator',
+ u'accept',
+ u'acceptable',
+ u'accepted',
+ u'accepting',
+ u'access',
+ u'according',
+ u'account',
+ u'accounts',
+ u'accurate',
+ u'achieve',
+ u'achkar',
+ u'acknowledge',
+ u'acns',
+ u'acquired',
+ u'across',
+ u'acs',
+ u'acsu',
+ u'act',
+ u'action',
+ u'actions',
+ u'active',
+ u'acts',
+ u'actual',
+ u'actually',
+ u'ad',
+ u'adam',
+ u'adams',
+ u'adapter',
+ u'adb',
+ u'add',
+ u'added',
+ u'adding',
+ u'addition',
+ u'additional',
+ u'address',
+ u'addresses',
+ u'adirondack',
+ u'admissions',
+ u'admit',
+ u'adopt',
+ u'advance',
+ u'advanced',
+ u'advantage',
+ u'advice',
+ u'affected',
+ u'afford',
+ u'afraid',
+ u'africa',
+ u'after',
+ u'afternoon',
+ u'again',
+ u'against',
+ u'age',
+ u'agnostic',
+ u'ago',
+ u'agree',
+ u'agreed',
+ u'agreement',
+ u'ah',
+ u'ahead',
+ u'ahl',
+ u'ai',
+ u'aids',
+ u'air',
+ u'aisun3',
+ u'al',
+ u'alan',
+ u'alberta',
+ u'alchemy',
+ u'alexander',
+ u'alive',
+ u'allen',
+ u'allow',
+ u'allowed',
+ u'allows',
+ u'almost',
+ u'alone',
+ u'along',
+ u'alot',
+ u'alpha',
+ u'already',
+ u'also',
+ u'alt',
+ u'alternative',
+ u'although',
+ u'altogether',
+ u'alvin',
+ u'always',
+ u'am',
+ u'am2x',
+ u'amateur',
+ u'amazing',
+ u'ambiguous',
+ u'america',
+ u'american',
+ u'americans',
+ u'among',
+ u'amount',
+ u'amour',
+ u'analysis',
+ u'ancient',
+ u'anderson',
+ u'andersson',
+ u'andrew',
+ u'andreychuk',
+ u'andy',
+ u'angeles',
+ u'angels',
+ u'anger',
+ u'angry',
+ u'animals',
+ u'ann',
+ u'anna',
+ u'announce',
+ u'announced',
+ u'announcer',
+ u'announcers',
+ u'annoying',
+ u'another',
+ u'answer',
+ u'answered',
+ u'answering',
+ u'answers',
+ u'antonio',
+ u'anybody',
+ u'anymore',
+ u'anyone',
+ u'anything',
+ u'anytime',
+ u'anyway',
+ u'anyways',
+ u'anywhere',
+ u'apart',
+ u'apologize',
+ u'apostle',
+ u'apostles',
+ u'apparent',
+ u'apparently',
+ u'appear',
+ u'appeared',
+ u'appears',
+ u'apple',
+ u'applelink',
+ u'appletalk',
+ u'application',
+ u'applications',
+ u'applied',
+ u'applies',
+ u'apply',
+ u'appointed',
+ u'appreciate',
+ u'appreciated',
+ u'approach',
+ u'appropriate',
+ u'approved',
+ u'apr',
+ u'april',
+ u'aps',
+ u'aquinas',
+ u'arbor',
+ u'area',
+ u'areas',
+ u'aren',
+ u'arena',
+ u'argue',
+ u'arguing',
+ u'argument',
+ u'arguments',
+ u'army',
+ u'around',
+ u'arrogance',
+ u'arrogant',
+ u'art',
+ u'articles',
+ u'artificial',
+ u'arts',
+ u'ashley',
+ u'aside',
+ u'ask',
+ u'asked',
+ u'asking',
+ u'asks',
+ u'aspect',
+ u'aspects',
+ u'ass',
+ u'assertion',
+ u'assist',
+ u'assistant',
+ u'assists',
+ u'associate',
+ u'associated',
+ u'association',
+ u'assume',
+ u'assumed',
+ u'assuming',
+ u'assumption',
+ u'astray',
+ u'atheism',
+ u'atheist',
+ u'atheists',
+ u'athena',
+ u'athens',
+ u'athos',
+ u'atlanta',
+ u'att',
+ u'attack',
+ u'attempt',
+ u'attempted',
+ u'attempting',
+ u'attempts',
+ u'attendance',
+ u'attention',
+ u'atterlep',
+ u'attitude',
+ u'au',
+ u'audience',
+ u'austin',
+ u'australia',
+ u'author',
+ u'authorities',
+ u'authority',
+ u'authors',
+ u'auto',
+ u'available',
+ u'ave',
+ u'avenue',
+ u'average',
+ u'avoid',
+ u'awarded',
+ u'awards',
+ u'aware',
+ u'away',
+ u'awesome',
+ u'awful',
+ u'axelsson',
+ u'back',
+ u'background',
+ u'backup',
+ u'bad',
+ u'baker',
+ u'ball',
+ u'ballentine',
+ u'baltimore',
+ u'band',
+ u'baptism',
+ u'barrasso',
+ u'base',
+ u'baseball',
+ u'based',
+ u'basic',
+ u'basically',
+ u'basis',
+ u'basketball',
+ u'battery',
+ u'battle',
+ u'bay',
+ u'bbs',
+ u'bc',
+ u'bear',
+ u'bears',
+ u'beat',
+ u'beautiful',
+ u'became',
+ u'because',
+ u'become',
+ u'becomes',
+ u'becoming',
+ u'been',
+ u'before',
+ u'beg',
+ u'began',
+ u'begin',
+ u'beginning',
+ u'begins',
+ u'behalf',
+ u'behavior',
+ u'behaviour',
+ u'behind',
+ u'being',
+ u'beings',
+ u'belfour',
+ u'belief',
+ u'beliefs',
+ u'believe',
+ u'believed',
+ u'believers',
+ u'believes',
+ u'believing',
+ u'bell',
+ u'bellows',
+ u'belong',
+ u'below',
+ u'bench',
+ u'benefit',
+ u'beranek',
+ u'berkeley',
+ u'bernoulli',
+ u'beside',
+ u'besides',
+ u'best',
+ u'bet',
+ u'better',
+ u'between',
+ u'beyond',
+ u'bgsu',
+ u'bgu',
+ u'biased',
+ u'bible',
+ u'biblical',
+ u'big',
+ u'bigger',
+ u'biggest',
+ u'bill',
+ u'birth',
+ u'bishop',
+ u'bit',
+ u'bitnet',
+ u'bits',
+ u'black',
+ u'blackhawks',
+ u'blame',
+ u'bless',
+ u'blessed',
+ u'blind',
+ u'blindly',
+ u'block',
+ u'blood',
+ u'blow',
+ u'blue',
+ u'blues',
+ u'bnr',
+ u'board',
+ u'boarding',
+ u'boards',
+ u'bob',
+ u'bobby',
+ u'body',
+ u'book',
+ u'books',
+ u'bookstore',
+ u'boot',
+ u'born',
+ u'bos',
+ u'boss',
+ u'boston',
+ u'both',
+ u'bother',
+ u'bothers',
+ u'bottom',
+ u'bought',
+ u'boulder',
+ u'bound',
+ u'boundary',
+ u'bourque',
+ u'bowling',
+ u'box',
+ u'boxes',
+ u'boy',
+ u'brad',
+ u'bradley',
+ u'brain',
+ u'branch',
+ u'brand',
+ u'braves',
+ u'break',
+ u'breaker',
+ u'breaking',
+ u'brent',
+ u'breton',
+ u'bri',
+ u'brian',
+ u'brief',
+ u'brind',
+ u'bring',
+ u'brings',
+ u'british',
+ u'broadcast',
+ u'broke',
+ u'broken',
+ u'brother',
+ u'brothers',
+ u'brought',
+ u'brown',
+ u'bruce',
+ u'bruins',
+ u'brunswick',
+ u'bryan',
+ u'btw',
+ u'bu',
+ u'buddhism',
+ u'buddhist',
+ u'buf',
+ u'buffalo',
+ u'bug',
+ u'build',
+ u'building',
+ u'built',
+ u'bunch',
+ u'bure',
+ u'burnaby',
+ u'burned',
+ u'burns',
+ u'bus',
+ u'business',
+ u'butt',
+ u'button',
+ u'buy',
+ u'buying',
+ u'byler',
+ u'bytes',
+ u'c610',
+ u'c650',
+ u'ca',
+ u'cable',
+ u'cables',
+ u'cache',
+ u'cadkey',
+ u'cage',
+ u'cal',
+ u'calder',
+ u'calgary',
+ u'california',
+ u'call',
+ u'called',
+ u'calling',
+ u'calls',
+ u'calvin',
+ u'cam',
+ u'came',
+ u'camp',
+ u'campbell',
+ u'campus',
+ u'canada',
+ u'canadian',
+ u'canadians',
+ u'canadiens',
+ u'cannot',
+ u'canon',
+ u'canucks',
+ u'capability',
+ u'capable',
+ u'capacity',
+ u'cape',
+ u'capital',
+ u'capitals',
+ u'caps',
+ u'captain',
+ u'captains',
+ u'car',
+ u'caralv',
+ u'card',
+ u'cardinal',
+ u'cards',
+ u'care',
+ u'career',
+ u'careful',
+ u'carefully',
+ u'cares',
+ u'carleton',
+ u'carnegie',
+ u'carol',
+ u'carolina',
+ u'carpenter',
+ u'carried',
+ u'carry',
+ u'carrying',
+ u'carson',
+ u'cartridge',
+ u'case',
+ u'cases',
+ u'cassels',
+ u'cast',
+ u'category',
+ u'catholic',
+ u'catholics',
+ u'caught',
+ u'cause',
+ u'caused',
+ u'causes',
+ u'cb',
+ u'cbc',
+ u'cbnewsh',
+ u'cbnewsk',
+ u'cc',
+ u'ccu',
+ u'cd',
+ u'cd300',
+ u'cec1',
+ u'celebrate',
+ u'cent',
+ u'center',
+ u'central',
+ u'centre',
+ u'centris',
+ u'centuries',
+ u'century',
+ u'ceremonial',
+ u'ceremony',
+ u'certain',
+ u'certainly',
+ u'certainty',
+ u'cf',
+ u'cgsvax',
+ u'chain',
+ u'champions',
+ u'championship',
+ u'championships',
+ u'champs',
+ u'chance',
+ u'chances',
+ u'change',
+ u'changed',
+ u'changes',
+ u'changing',
+ u'channel',
+ u'chapter',
+ u'character',
+ u'charge',
+ u'charles',
+ u'charlie',
+ u'cheap',
+ u'cheaper',
+ u'check',
+ u'checked',
+ u'checking',
+ u'cheers',
+ u'chelios',
+ u'chem',
+ u'chemistry',
+ u'cherry',
+ u'chhabra',
+ u'chi',
+ u'chicago',
+ u'chief',
+ u'child',
+ u'children',
+ u'chip',
+ u'chips',
+ u'choice',
+ u'choices',
+ u'choose',
+ u'choosing',
+ u'chose',
+ u'chosen',
+ u'chris',
+ u'christ',
+ u'christian',
+ u'christianity',
+ u'christians',
+ u'christopher',
+ u'chuck',
+ u'church',
+ u'churches',
+ u'ciccarelli',
+ u'circle',
+ u'circumstances',
+ u'cis',
+ u'cited',
+ u'cities',
+ u'city',
+ u'civil',
+ u'claim',
+ u'claimed',
+ u'claiming',
+ u'claims',
+ u'claremont',
+ u'clark',
+ u'clarke',
+ u'clarkson',
+ u'class',
+ u'classic',
+ u'classy',
+ u'claude',
+ u'clean',
+ u'clear',
+ u'clearly',
+ u'clement',
+ u'cleveland',
+ u'clh',
+ u'clinton',
+ u'clock',
+ u'close',
+ u'closed',
+ u'closely',
+ u'closer',
+ u'closest',
+ u'club',
+ u'cmu',
+ u'co',
+ u'coach',
+ u'coaches',
+ u'coaching',
+ u'code',
+ u'coffey',
+ u'cohen',
+ u'col',
+ u'collection',
+ u'college',
+ u'collingridge',
+ u'color',
+ u'colorado',
+ u'colors',
+ u'colostate',
+ u'colour',
+ u'columbia',
+ u'com',
+ u'combination',
+ u'combined',
+ u'come',
+ u'comes',
+ u'comics',
+ u'coming',
+ u'command',
+ u'commandments',
+ u'commands',
+ u'comment',
+ u'commentary',
+ u'comments',
+ u'commitment',
+ u'committed',
+ u'common',
+ u'communication',
+ u'communications',
+ u'communion',
+ u'community',
+ u'comp',
+ u'companies',
+ u'company',
+ u'comparable',
+ u'comparative',
+ u'compare',
+ u'compared',
+ u'comparing',
+ u'comparison',
+ u'compatible',
+ u'complain',
+ u'complete',
+ u'completed',
+ u'completely',
+ u'complex',
+ u'complicated',
+ u'compuserve',
+ u'computer',
+ u'computers',
+ u'computing',
+ u'con',
+ u'concept',
+ u'conception',
+ u'concern',
+ u'concerned',
+ u'concerning',
+ u'conclude',
+ u'conclusion',
+ u'conclusions',
+ u'condemned',
+ u'conditions',
+ u'conditt',
+ u'conference',
+ u'configuration',
+ u'conflict',
+ u'confused',
+ u'confusing',
+ u'confusion',
+ u'congregation',
+ u'connect',
+ u'connected',
+ u'connection',
+ u'connector',
+ u'consecutive',
+ u'consensus',
+ u'conservative',
+ u'consider',
+ u'considered',
+ u'considering',
+ u'consistent',
+ u'consistently',
+ u'constant',
+ u'constantly',
+ u'consultant',
+ u'contact',
+ u'contained',
+ u'contains',
+ u'content',
+ u'context',
+ u'continent',
+ u'continue',
+ u'continued',
+ u'continues',
+ u'contract',
+ u'contradict',
+ u'contradiction',
+ u'contradictory',
+ u'contrary',
+ u'contribution',
+ u'control',
+ u'conversion',
+ u'convert',
+ u'converted',
+ u'convictions',
+ u'convince',
+ u'cook',
+ u'cool',
+ u'coos',
+ u'copies',
+ u'coprocessor',
+ u'copy',
+ u'cor',
+ u'cordially',
+ u'corinthians',
+ u'corner',
+ u'corp',
+ u'corporation',
+ u'correct',
+ u'correctly',
+ u'cost',
+ u'costs',
+ u'cote',
+ u'could',
+ u'couldn',
+ u'council',
+ u'count',
+ u'counted',
+ u'countries',
+ u'country',
+ u'couple',
+ u'course',
+ u'court',
+ u'courtnall',
+ u'cover',
+ u'coverage',
+ u'covered',
+ u'covington',
+ u'cpu',
+ u'craft',
+ u'craig',
+ u'crap',
+ u'crashes',
+ u'craven',
+ u'crazy',
+ u'create',
+ u'created',
+ u'creation',
+ u'creator',
+ u'credit',
+ u'critical',
+ u'criticism',
+ u'cross',
+ u'crowd',
+ u'cs',
+ u'csd',
+ u'cso',
+ u'cu',
+ u'cullen',
+ u'cult',
+ u'cultural',
+ u'culture',
+ u'cunixb',
+ u'cunixc',
+ u'cup',
+ u'cups',
+ u'curious',
+ u'current',
+ u'currently',
+ u'curtis',
+ u'cut',
+ u'cwis',
+ u'cwru',
+ u'czech',
+ u'd88',
+ u'dahlen',
+ u'daily',
+ u'dal',
+ u'dale',
+ u'dalhousie',
+ u'dallas',
+ u'damn',
+ u'damphousse',
+ u'dan',
+ u'danger',
+ u'dangerous',
+ u'daniel',
+ u'dare',
+ u'darius',
+ u'darius_lecointe',
+ u'darren',
+ u'dartmouth',
+ u'daryl',
+ ...]</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[169]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 272.344px; margin-bottom: -21px; border-right-width: 9px; min-height: 28px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">vectorizer</span>.<span class="cm-property">get_feature_names</span>()[<span class="cm-number">877</span>]</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 28px;"></div><div class="CodeMirror-gutters" style="display: none; height: 37px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt output_prompt">Out[169]:</div><div class="output_subarea output_text output_result"><pre>u'connect'</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[170]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 172.281px; margin-bottom: -21px; border-right-width: 9px; min-height: 28px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">simple_dataset</span>.<span class="cm-property">data</span>[<span class="cm-number">0</span>]</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 28px;"></div><div class="CodeMirror-gutters" style="display: none; height: 37px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt output_prompt">Out[170]:</div><div class="output_subarea output_text output_result"><pre>u'From: erik@cheshire.oxy.edu (Erik Adams)\nSubject: HELP!!  My Macintosh "luggable" has lines on its screen!\nOrganization: Occidental College, Los Angeles, CA 90041 USA.\nDistribution: comp\nLines: 20\n\nOkay, I don\'t use it very much, but I would like for it to keep working\ncorrectly, at least as long as Apple continues to make System software\nthat will run on it, if slowly :-)\n\nHere is the problem:  When the screen is tilted too far back, vertical\nlines appear on the screen.  They are every 10 pixels or so, and seem\nto be affected somewhat by opening windows and pulling down menus.\nIt looks to a semi-technical person like there is a loose connection\nbetween the screen and the rest of the computer.\n\nI am open to suggestions that do not involve buying a new computer,\nor taking this one to the shop.  I would also like to not have\nto buy one of Larry Pina\'s books.  I like Larry, but I\'m not sure\nI feel strongly enough about the computer to buy a service manual\nfor it.\n\nOn a related note:  what does the monitor connector connect to?\n\nErik\n\n'</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell text_cell unselected rendered" tabindex="2"><div class="prompt input_prompt"></div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-default CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true" style="bottom: 0px;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; padding-right: 0px; padding-bottom: 0px; margin-bottom: -21px; border-right-width: 9px; min-height: 31px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 20px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-header cm-header-2">## KMeans</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 31px;"></div><div class="CodeMirror-gutters" style="display: none; height: 40px;"></div></div></div></div><div class="text_cell_render rendered_html" tabindex="-1"><h2 id="KMeans">KMeans<a class="anchor-link" href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#KMeans">¶</a></h2>
+</div></div></div><div class="cell code_cell rendered unselected" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[172]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 341.578px; margin-bottom: -21px; border-right-width: 9px; min-height: 96px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>x</pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"><div class="CodeMirror-selected" style="position: absolute; left: 0px; top: 0px; width: 261.625px; height: 17px;"></div></div><div class="CodeMirror-cursors" style="visibility: hidden;"></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">from</span> <span class="cm-variable">sklearn</span>.<span class="cm-property">cluster</span> <span class="cm-keyword">import</span> <span class="cm-variable">KMeans</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">model</span> = <span class="cm-variable">KMeans</span>(<span class="cm-variable">n_clusters</span>=<span class="cm-number">3</span>, <span class="cm-variable">random_state</span>=<span class="cm-number">1</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">preds</span> = <span class="cm-variable">model</span>.<span class="cm-property">fit_predict</span>(<span class="cm-variable">matrix</span>.<span class="cm-property">toarray</span>())</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">preds</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 96px;"></div><div class="CodeMirror-gutters" style="display: none; height: 105px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>[0 0 2 ..., 0 2 1]
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[173]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 210.781px; margin-bottom: -21px; border-right-width: 9px; min-height: 28px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">simple_dataset</span>.<span class="cm-property">target</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 28px;"></div><div class="CodeMirror-gutters" style="display: none; height: 37px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>[0 0 1 ..., 0 1 2]
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[174]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 649.359px; margin-bottom: -21px; border-right-width: 9px; min-height: 62px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">mapping</span> = {<span class="cm-number">2</span> : <span class="cm-number">1</span>, <span class="cm-number">1</span>: <span class="cm-number">2</span>, <span class="cm-number">0</span>: <span class="cm-number">0</span>}</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">mapped_preds</span> = [<span class="cm-variable">mapping</span>[<span class="cm-variable">pred</span>] <span class="cm-keyword">for</span> <span class="cm-variable">pred</span> <span class="cm-keyword">in</span> <span class="cm-variable">preds</span>]</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-builtin">float</span>(<span class="cm-builtin">sum</span>(<span class="cm-variable">mapped_preds</span> <span class="cm-operator">!</span>= <span class="cm-variable">simple_dataset</span>.<span class="cm-property">target</span>)) <span class="cm-operator">/</span> <span class="cm-builtin">len</span>(<span class="cm-variable">simple_dataset</span>.<span class="cm-property">target</span>)</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 62px;"></div><div class="CodeMirror-gutters" style="display: none; height: 71px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>0.0483961733258
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[175]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 495.516px; margin-bottom: -21px; border-right-width: 9px; min-height: 96px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">from</span> <span class="cm-variable">sklearn</span>.<span class="cm-property">linear_model</span> <span class="cm-keyword">import</span> <span class="cm-variable">LogisticRegression</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">from</span> <span class="cm-variable">sklearn</span>.<span class="cm-property">cross_validation</span> <span class="cm-keyword">import</span> <span class="cm-variable">cross_val_score</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">clf</span> = <span class="cm-variable">LogisticRegression</span>()</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">cross_val_score</span>(<span class="cm-variable">clf</span>, <span class="cm-variable">matrix</span>, <span class="cm-variable">simple_dataset</span>.<span class="cm-property">target</span>).<span class="cm-property">mean</span>()</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 96px;"></div><div class="CodeMirror-gutters" style="display: none; height: 105px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>0.985360318588
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell text_cell unselected rendered" tabindex="2"><div class="prompt input_prompt"></div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-default CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true" style="bottom: 0px;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; padding-right: 0px; padding-bottom: 0px; margin-bottom: -21px; border-right-width: 9px; min-height: 31px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 20px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-header cm-header-2">## Более сложная выборка</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 31px;"></div><div class="CodeMirror-gutters" style="display: none; height: 40px;"></div></div></div></div><div class="text_cell_render rendered_html" tabindex="-1"><h2 id="Более-сложная-выборка">Более сложная выборка<a class="anchor-link" href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#Более-сложная-выборка">¶</a></h2>
+</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[176]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 657px; margin-bottom: -21px; border-right-width: 9px; min-height: 62px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">dataset</span> = <span class="cm-variable">fetch_20newsgroups</span>(</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;">    <span class="cm-variable">subset</span>=<span class="cm-string">'train'</span>, </span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;">    <span class="cm-variable">categories</span>=[<span class="cm-string">'comp.sys.mac.hardware'</span>, <span class="cm-string">'comp.os.ms-windows.misc'</span>, <span class="cm-string">'comp.graphics'</span>])</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 62px;"></div><div class="CodeMirror-gutters" style="display: none; height: 71px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style="display: none;"></div><div class="output" style="display: none;"></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[177]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 364.688px; margin-bottom: -21px; border-right-width: 9px; min-height: 96px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">matrix</span> = <span class="cm-variable">vectorizer</span>.<span class="cm-property">fit_transform</span>(<span class="cm-variable">dataset</span>.<span class="cm-property">data</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">model</span> = <span class="cm-variable">KMeans</span>(<span class="cm-variable">n_clusters</span>=<span class="cm-number">3</span>, <span class="cm-variable">random_state</span>=<span class="cm-number">42</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">preds</span> = <span class="cm-variable">model</span>.<span class="cm-property">fit_predict</span>(<span class="cm-variable">matrix</span>.<span class="cm-property">toarray</span>())</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">preds</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">dataset</span>.<span class="cm-property">target</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 96px;"></div><div class="CodeMirror-gutters" style="display: none; height: 105px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>[0 1 2 ..., 0 2 0]
+[2 1 1 ..., 2 0 2]
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[178]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 541.609px; margin-bottom: -21px; border-right-width: 9px; min-height: 62px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">mapping</span> = {<span class="cm-number">2</span> : <span class="cm-number">0</span>, <span class="cm-number">1</span>: <span class="cm-number">1</span>, <span class="cm-number">0</span>: <span class="cm-number">2</span>}</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">mapped_preds</span> = [<span class="cm-variable">mapping</span>[<span class="cm-variable">pred</span>] <span class="cm-keyword">for</span> <span class="cm-variable">pred</span> <span class="cm-keyword">in</span> <span class="cm-variable">preds</span>]</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-builtin">float</span>(<span class="cm-builtin">sum</span>(<span class="cm-variable">mapped_preds</span> <span class="cm-operator">!</span>= <span class="cm-variable">dataset</span>.<span class="cm-property">target</span>)) <span class="cm-operator">/</span> <span class="cm-builtin">len</span>(<span class="cm-variable">dataset</span>.<span class="cm-property">target</span>)</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 62px;"></div><div class="CodeMirror-gutters" style="display: none; height: 71px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>0.261266400456
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[179]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 441.641px; margin-bottom: -21px; border-right-width: 9px; min-height: 45px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">clf</span> = <span class="cm-variable">LogisticRegression</span>()</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">cross_val_score</span>(<span class="cm-variable">clf</span>, <span class="cm-variable">matrix</span>, <span class="cm-variable">dataset</span>.<span class="cm-property">target</span>).<span class="cm-property">mean</span>()</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 45px;"></div><div class="CodeMirror-gutters" style="display: none; height: 54px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>0.917279226713
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell text_cell rendered unselected" tabindex="2"><div class="prompt input_prompt"></div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-default CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true" style="bottom: 0px;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; padding-right: 0px; padding-bottom: 0px; margin-bottom: -21px; border-right-width: 9px; min-height: 31px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 20px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-header cm-header-2">## SVD + KMeans</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 31px;"></div><div class="CodeMirror-gutters" style="display: none; height: 40px;"></div></div></div></div><div class="text_cell_render rendered_html" tabindex="-1"><h2 id="SVD-+-KMeans">SVD + KMeans<a class="anchor-link" href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#SVD-+-KMeans">¶</a></h2>
+</div></div></div><div class="cell code_cell rendered selected" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[180]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 22.5938px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 426.234px; margin-bottom: -21px; border-right-width: 9px; min-height: 147px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 17px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">from</span> <span class="cm-variable">sklearn</span>.<span class="cm-property">decomposition</span> <span class="cm-keyword">import</span> <span class="cm-variable">TruncatedSVD</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">model</span> = <span class="cm-variable">KMeans</span>(<span class="cm-variable">n_clusters</span>=<span class="cm-number">3</span>, <span class="cm-variable">random_state</span>=<span class="cm-number">42</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">svd</span> = <span class="cm-variable">TruncatedSVD</span>(<span class="cm-variable">n_components</span>=<span class="cm-number">1000</span>, <span class="cm-variable">random_state</span>=<span class="cm-number">123</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">features</span> = <span class="cm-variable">svd</span>.<span class="cm-property">fit_transform</span>(<span class="cm-variable">matrix</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">preds</span> = <span class="cm-variable">model</span>.<span class="cm-property">fit_predict</span>(<span class="cm-variable">features</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">preds</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">dataset</span>.<span class="cm-property">target</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 147px;"></div><div class="CodeMirror-gutters" style="display: none; height: 156px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>[0 2 1 ..., 0 1 0]
+[2 1 1 ..., 2 0 2]
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell rendered unselected" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[181]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 228.703px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 541.609px; margin-bottom: -21px; border-right-width: 9px; min-height: 62px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>x</pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors" style="visibility: hidden;"><div class="CodeMirror-cursor" style="left: 223.109px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">mapping</span> = {<span class="cm-number">0</span> : <span class="cm-number">2</span>, <span class="cm-number">1</span>: <span class="cm-number">0</span>, <span class="cm-number">2</span>: <span class="cm-number">1</span>}</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">mapped_preds</span> = [<span class="cm-variable">mapping</span>[<span class="cm-variable">pred</span>] <span class="cm-keyword">for</span> <span class="cm-variable">pred</span> <span class="cm-keyword">in</span> <span class="cm-variable">preds</span>]</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-builtin">float</span>(<span class="cm-builtin">sum</span>(<span class="cm-variable">mapped_preds</span> <span class="cm-operator">!</span>= <span class="cm-variable">dataset</span>.<span class="cm-property">target</span>)) <span class="cm-operator">/</span> <span class="cm-builtin">len</span>(<span class="cm-variable">dataset</span>.<span class="cm-property">target</span>)</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 62px;"></div><div class="CodeMirror-gutters" style="display: none; height: 71px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>0.206503137479
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[182]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 418.531px; margin-bottom: -21px; border-right-width: 9px; min-height: 113px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">model</span> = <span class="cm-variable">KMeans</span>(<span class="cm-variable">n_clusters</span>=<span class="cm-number">3</span>, <span class="cm-variable">random_state</span>=<span class="cm-number">42</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">svd</span> = <span class="cm-variable">TruncatedSVD</span>(<span class="cm-variable">n_components</span>=<span class="cm-number">200</span>, <span class="cm-variable">random_state</span>=<span class="cm-number">123</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">features</span> = <span class="cm-variable">svd</span>.<span class="cm-property">fit_transform</span>(<span class="cm-variable">matrix</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">preds</span> = <span class="cm-variable">model</span>.<span class="cm-property">fit_predict</span>(<span class="cm-variable">features</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">preds</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">dataset</span>.<span class="cm-property">target</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 113px;"></div><div class="CodeMirror-gutters" style="display: none; height: 122px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>[2 0 1 ..., 2 1 2]
+[2 1 1 ..., 2 0 2]
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[183]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 480.063px; margin-bottom: -21px; border-right-width: 9px; min-height: 164px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">import</span> <span class="cm-variable">itertools</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">def</span> <span class="cm-def">validate_with_mappings</span>(<span class="cm-variable">preds</span>, <span class="cm-variable">target</span>, <span class="cm-variable">dataset</span>):</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;">    <span class="cm-variable">permutations</span> = <span class="cm-variable">itertools</span>.<span class="cm-property">permutations</span>([<span class="cm-number">0</span>, <span class="cm-number">1</span>, <span class="cm-number">2</span>])</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;">    <span class="cm-keyword">for</span> <span class="cm-variable">a</span>, <span class="cm-variable">b</span>, <span class="cm-variable">c</span> <span class="cm-keyword">in</span> <span class="cm-variable">permutations</span>:</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;">        <span class="cm-variable">mapping</span> = {<span class="cm-number">2</span> : <span class="cm-variable">a</span>, <span class="cm-number">1</span>: <span class="cm-variable">b</span>, <span class="cm-number">0</span>: <span class="cm-variable">c</span>}</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;">        <span class="cm-variable">mapped_preds</span> = [<span class="cm-variable">mapping</span>[<span class="cm-variable">pred</span>] <span class="cm-keyword">for</span> <span class="cm-variable">pred</span> <span class="cm-keyword">in</span> <span class="cm-variable">preds</span>]</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;">        <span class="cm-keyword">print</span> <span class="cm-builtin">float</span>(<span class="cm-builtin">sum</span>(<span class="cm-variable">mapped_preds</span> <span class="cm-operator">!</span>= <span class="cm-variable">target</span>)) <span class="cm-operator">/</span> <span class="cm-builtin">len</span>(<span class="cm-variable">target</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;">        </span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">validate_with_mappings</span>(<span class="cm-variable">preds</span>, <span class="cm-variable">dataset</span>.<span class="cm-property">target</span>, <span class="cm-variable">dataset</span>)</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 164px;"></div><div class="CodeMirror-gutters" style="display: none; height: 173px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>0.900741585853
+0.674272675414
+0.705647461495
+0.893896177981
+0.205362236167
+0.620079863092
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell code_cell unselected rendered" tabindex="2"><div class="input"><div class="prompt input_prompt">In&nbsp;[184]:</div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-ipython"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 418.531px; margin-bottom: -21px; border-right-width: 9px; min-height: 130px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">model</span> = <span class="cm-variable">KMeans</span>(<span class="cm-variable">n_clusters</span>=<span class="cm-number">3</span>, <span class="cm-variable">random_state</span>=<span class="cm-number">42</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">svd</span> = <span class="cm-variable">TruncatedSVD</span>(<span class="cm-variable">n_components</span>=<span class="cm-number">200</span>, <span class="cm-variable">random_state</span>=<span class="cm-number">321</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">features</span> = <span class="cm-variable">svd</span>.<span class="cm-property">fit_transform</span>(<span class="cm-variable">matrix</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">preds</span> = <span class="cm-variable">model</span>.<span class="cm-property">fit_predict</span>(<span class="cm-variable">features</span>)</span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">preds</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-keyword">print</span> <span class="cm-variable">dataset</span>.<span class="cm-property">target</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable">validate_with_mappings</span>(<span class="cm-variable">preds</span>, <span class="cm-variable">dataset</span>.<span class="cm-property">target</span>, <span class="cm-variable">dataset</span>)</span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 130px;"></div><div class="CodeMirror-gutters" style="display: none; height: 139px;"></div></div></div></div></div></div><div class="widget-area" style="display: none;"><div class="prompt"><button class="close">×</button></div><div class="widget-subarea"></div></div><div class="output_wrapper"><div class="out_prompt_overlay prompt" title="click to expand output; double click to hide output" style=""></div><div class="output" style=""><div class="output_area"><div class="prompt"></div><div class="output_subarea output_text output_stream output_stdout"><pre>[2 1 0 ..., 2 0 2]
+[2 1 1 ..., 2 0 2]
+0.713063320023
+0.845407872219
+0.889332572732
+0.70051340559
+0.586423274387
+0.265259555048
+</pre></div></div></div><div class="btn btn-default output_collapsed" title="click to expand output" style="display: none;">. . .</div></div></div><div class="cell text_cell unselected rendered" tabindex="2"><div class="prompt input_prompt"></div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-default CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true" style="bottom: 0px;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; padding-right: 0px; padding-bottom: 0px; margin-bottom: -21px; border-right-width: 9px; min-height: 31px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 20px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-header cm-header-2">## Итоги</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 31px;"></div><div class="CodeMirror-gutters" style="display: none; height: 40px;"></div></div></div></div><div class="text_cell_render rendered_html" tabindex="-1"><h2 id="Итоги">Итоги<a class="anchor-link" href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#Итоги">¶</a></h2>
+</div></div></div><div class="cell text_cell unselected rendered" tabindex="2"><div class="prompt input_prompt"></div><div class="inner_cell"><div class="ctb_hideshow"><div class="celltoolbar"></div></div><div class="input_area"><div class="CodeMirror cm-s-default CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5.59375px; left: 5.59375px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true" style="bottom: 0px;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; padding-right: 0px; padding-bottom: 0px; margin-bottom: -21px; border-right-width: 9px; min-height: 62px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 0px; top: 0px; height: 17px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable-2">1. Получили интерпретируемый результат на обеих выборках</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable-2">1. Реальность, однако, намного более жестока</span></span></pre><pre class=" CodeMirror-line "><span style="padding-right: 0.1px;"><span class="cm-variable-2">1. Попробовали использовать AgglomerativeClustering и KMeans</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 9px; width: 1px; border-bottom: 0px solid transparent; top: 62px;"></div><div class="CodeMirror-gutters" style="display: none; height: 71px;"></div></div></div></div><div class="text_cell_render rendered_html" tabindex="-1"><ol>
+<li>Получили интерпретируемый результат на обеих выборках</li>
+<li>Реальность, однако, намного более жестока</li>
+<li>Попробовали использовать AgglomerativeClustering и KMeans</li>
+</ol>
+</div></div></div></div><div class="end_space"></div></div>
+        <div id="tooltip" class="ipython_tooltip" style="display:none"><div class="tooltipbuttons"><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#" role="button" class="ui-button"><span class="ui-icon ui-icon-close">Close</span></a><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#" class="ui-corner-all" role="button" id="expanbutton" title="Grow the tooltip vertically (press shift-tab twice)"><span class="ui-icon ui-icon-plus">Expand</span></a><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#" role="button" class="ui-button" title="show the current docstring in pager (press shift-tab 4 times)"><span class="ui-icon ui-icon-arrowstop-l-n">Open in Pager</span></a><a href="http://localhost:8888/notebooks/Downloads/_35173afed614f5045ca0c6f3d16e23d6_TextsClusteringExample.ipynb#" role="button" class="ui-button" title="Tooltip will linger for 10 seconds while you type" style="display: none;"><span class="ui-icon ui-icon-clock">Close</span></a></div><div class="pretooltiparrow"></div><div class="tooltiptext smalltooltip"></div></div>
+    </div>
+</div>
+
+
+
+</div>
+
+
+
+<div id="pager" class="ui-resizable">
+    <div id="pager-contents">
+        <div id="pager-container" class="container"></div>
+    </div>
+    <div id="pager-button-area"><a role="button" title="Open the pager in an external window" class="ui-button"><span class="ui-icon ui-icon-extlink"></span></a><a role="button" title="Close the pager" class="ui-button"><span class="ui-icon ui-icon-close"></span></a></div>
+<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div></div>
+
+
+
+
+
+
+<script type="text/javascript">
+    sys_info = {"notebook_version": "4.3.1", "notebook_path": "C:\\Anaconda3\\lib\\site-packages\\notebook", "commit_source": "", "commit_hash": "", "sys_version": "3.6.0 |Anaconda custom (64-bit)| (default, Dec 23 2016, 11:57:41) [MSC v.1900 64 bit (AMD64)]", "sys_executable": "C:\\Anaconda3\\python.exe", "sys_platform": "win32", "platform": "Windows-8.1-6.3.9600-SP0", "os_name": "nt", "default_encoding": "utf-8"};
+</script>
+
+<script src="./TextsClusteringExample_files/encoding.js.download" charset="utf-8"></script>
+
+
+    <script src="./TextsClusteringExample_files/main.min.js.download" type="text/javascript" charset="utf-8"></script>
+
+
+
+
+
+
+<div style="position: absolute; width: 0px; height: 0px; overflow: hidden; padding: 0px; border: 0px; margin: 0px;"><div id="MathJax_Font_Test" style="position: absolute; visibility: hidden; top: 0px; left: 0px; width: auto; padding: 0px; border: 0px; margin: 0px; white-space: nowrap; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; font-size: 40px; font-weight: normal; font-style: normal;"></div></div><div class="widget-modal-backdrop widget-modal-hidden"><div class="widget-modal-text"><i class="fa fa-cog fa-spin"></i><div>Rendering widgets...</div></div><div class="progress widget-modal-progress"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div></div></body><span class="gr__tooltip"><span class="gr__tooltip-content"></span><i class="gr__tooltip-logo"></i><span class="gr__triangle"></span></span></html>
