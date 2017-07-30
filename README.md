@@ -11,3 +11,5 @@
 #### https://www.youtube.com/watch?v=U0LOSHY7U5Q
 #### https://github.com/RaRe-Technologies/movie-plots-by-genre/blob/master/Document%20classification%20with%20word%20embeddings%20tutorial.ipynb
 
+#### масштабирование
+#### https://www.mii.lt/informatica/pdf/INFO711.pdf
